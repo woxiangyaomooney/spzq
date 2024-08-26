@@ -54,33 +54,46 @@ class Worker(QThread):
     def process_video_traditional(self):
         cap = cv2.VideoCapture(self.input_path)
         
-        # 获取输入视频的帧率和分辨率
+        # 获取输入视频的帧率
         fps = cap.get(cv2.CAP_PROP_FPS)
-        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+        # 打印输入视频信息
+        print(f"帧率: {fps}")
+        print(f"正在处理视频: {self.input_path}")
         
         # 提取输入视频的文件名，并保留扩展名
         input_filename = os.path.basename(self.input_path)
         output_path = os.path.join(TRADITIONAL_DIR, input_filename)
         
-        # 使用与输入视频匹配的编码器和参数创建VideoWriter
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
-        
+        # 初始化变量
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         frame_idx = 0
+        out = None
         
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
+
+            # 对当前帧进行增强处理
             frame = enhance_traditional(frame)
+
+            # 如果是第一帧，获取增强后帧的尺寸并初始化 VideoWriter
+            if out is None:
+                frame_height, frame_width = frame.shape[:2]
+                fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+                out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+            
+            # 将处理后的帧写入视频
             out.write(frame)
             frame_idx += 1
             self.progress.emit(int(100 * frame_idx / total_frames))
         
+        print(f"传统技术——增强视频已保存为: {output_path}")
         cap.release()
-        out.release()
+        if out:
+            out.release()
+
 
 
     def process_images_dl(self):
