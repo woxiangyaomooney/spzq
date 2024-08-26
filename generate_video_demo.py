@@ -62,8 +62,10 @@ class VideoDemo:
             if i >= self.start_frame:
                 img_left = mmcv.imread(path_left, backend='cv2')
                 img_right = mmcv.imread(path_right, backend='cv2')
-                # img_right = mmcv.imrescale(
-                #     img_right, 4, interpolation='nearest', backend='cv2')
+                ##############################
+                img_right = mmcv.imrescale(
+                    img_right, 4, interpolation='nearest', backend='cv2')
+                
                 current_idx = self.slide_step * (i - self.start_frame)
                 img_out = self.merge_images(img_left, img_right, current_idx)
 
@@ -114,9 +116,9 @@ if __name__ == '__main__':
     """
 
     video_demo = VideoDemo(
-        input_left_dir='results/demo_000',
-        input_right_dir='data/demo_000',
-        output_path='demo_video.mp4',
+        input_left_dir='results/traditional/frames',
+        input_right_dir='data/frames',
+        output_path='try_tra.mp4',
         start_frame=5,
         pause_frame=15,
         repeat_when_pause=25,
