@@ -465,7 +465,8 @@ if __name__ == "__main__":
 
 **界面展示：**
 
-![image-20240826092944199](./图片/image-20240826092944199.png)
+![image-20240826092944199](https://github.com/user-attachments/assets/259a5352-0b60-46de-ab42-504559421dc7)
+
 
 
 
